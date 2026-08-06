@@ -58,6 +58,26 @@ The guide has a shelf life and says so. This whole layer is a product decision t
 
 ---
 
+## Layout
+
+```
+.claude-plugin/marketplace.json   the marketplace itself — one entry per plugin
+plugins/<plugin>/                 one plugin = one thing a user installs
+  .claude-plugin/plugin.json      name and version, must match the marketplace entry
+  skills/<skill>/SKILL.md         the skill; references/ and scripts/ beside it
+  evals/                          triggering and behaviour cases, one directory per case
+guides/                           long-form prose, CC BY 4.0, versioned
+.github/scripts/                  the repository checks CI runs
+```
+
+**Where a new skill goes.** Into an existing plugin's `skills/` when it belongs to the same job, or into a new `plugins/<name>/` with its own `plugin.json` and an entry in `marketplace.json` when it doesn't. CI holds both to the same bar: the plugin `source` has to resolve, the names and versions have to agree, the skill has to pass the mechanical checker in strict mode, and it has to carry its evidence plus at least one eval case tagged `negative`.
+
+**The marketplace is read from the default branch.** A plugin sitting on a feature branch is not installable however green its CI is — merging is what publishes. If `/plugin marketplace add` finds nothing, that is usually the reason.
+
+**What doesn't belong here.** This repository is public and curated. Skills carrying client names, rates, addresses or private research stay in `~/.claude/skills/`, or in a private repository if they need to be shared. A private marketplace is the same shape as this one — it's just a second repo, and a plugin can be installed from both.
+
+---
+
 ## Contributing
 
 Issues and PRs welcome. The most useful contribution isn't a new rule — it's evidence against an existing one. See [CONTRIBUTING.md](CONTRIBUTING.md).

@@ -140,7 +140,14 @@ Pass 1 runs first because everything after it is cheaper on a smaller skill.
 
 Packaged, because a checklist you have to remember to apply is one you apply twice and then stop.
 
-### **[`skill-quality@bytexpand`](https://github.com/Ro-Fo/skills)** — MIT
+### **[`skill-quality@bytexpand`](../plugins/skill-quality)** — MIT
+
+```shell
+/plugin marketplace add Ro-Fo/skills
+/plugin install skill-quality@bytexpand
+```
+
+Not using Claude Code? [`reviewing-agent-skills`](../plugins/skill-quality/skills/reviewing-agent-skills) is a plain directory — copy it into `.claude/skills/`, or upload it wherever your platform takes Agent Skills.
 
 - Complement to [`skill-creator`](https://github.com/anthropics/skills), not a replacement — that one owns create → test → iterate, evals, benchmarking, description optimisation. This one runs the adversarial pass afterwards and hands measurement back.
 - Bundles a stdlib-only script for the mechanical half: frontmatter, budgets, orphans, broken internal links, unclosed fences, description shape.
