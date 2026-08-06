@@ -34,6 +34,12 @@ machine-readable output. Exit 0 clean, 1 errors, 2 warnings only.
 It covers what is countable, and that is the point: a clean run is not a verdict.
 Whether the content is worth loading is the judgement work in the nine passes.
 
+## The reasoning behind it
+
+**[Write the skill. Then attack it.](../../guides/writing-agent-skills.md)** — CC BY 4.0, versioned. It argues the nine passes, and labels where each rule came from so you can disagree with one on evidence rather than taste.
+
+It is deliberately **not** linked from `SKILL.md`. The guide is written for people; `SKILL.md` is loaded into an agent's context every time the skill fires. Pointing the agent at ~3.7k tokens of human-facing prose is precisely the context cost the guide tells you to delete.
+
 ## Scope
 
 This reviews **one** skill, once, before it goes out. It is not a periodic audit

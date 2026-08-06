@@ -258,6 +258,37 @@ def check_evals(root, plugin_dirs):
                                   "must assert the skill stays quiet when it should")
 
 
+def check_repo_links(root):
+    """Relative links in the human-facing markdown resolve.
+
+    Skills are already covered by check_structure.py, which runs its own link
+    check inside each skill directory. This covers everything else -- the
+    READMEs and CONTRIBUTING, whose whole job is pointing at other files.
+    """
+    targets = [root / "README.md", root / "CONTRIBUTING.md"]
+    targets += sorted((root / "plugins").glob("*/README.md"))
+    targets += sorted((root / "plugins").glob("*/evals/README.md"))
+
+    broken = 0
+    checked = 0
+    for path in targets:
+        if not path.is_file():
+            continue
+        checked += 1
+        text = path.read_text(encoding="utf-8")
+        for m in re.finditer(r"\[[^\]]*\]\(([^)]+)\)", text):
+            target = m.group(1).split("#")[0].strip()
+            if not target or re.match(r"^(https?:|mailto:|#)", target):
+                continue
+            if not (path.parent / target).resolve().exists():
+                line = text[:m.start()].count("\n") + 1
+                broken += 1
+                fail(f"{path.relative_to(root)}:{line}",
+                     f"relative link does not resolve: {target}")
+    if checked and not broken:
+        note(f"relative links resolve in {checked} markdown file(s)")
+
+
 def check_placeholders(root):
     """No unreplaced placeholder of any kind survives anywhere in the tree."""
     hits = []
@@ -344,6 +375,7 @@ def main():
     check_skills(root, plugin_dirs)
     check_evals(root, plugin_dirs)
     check_guides(root)
+    check_repo_links(root)
     check_placeholders(root)
 
     for message in notes:
