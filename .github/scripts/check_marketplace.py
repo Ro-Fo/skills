@@ -25,9 +25,14 @@ import sys
 from pathlib import Path
 
 CHECKER = Path("plugins/skill-quality/skills/reviewing-agent-skills/scripts/check_structure.py")
-# Assembled from halves so this file does not match its own scan, and so
-# `grep -rn` for the placeholder across the tree returns nothing at all.
-PLACEHOLDER = re.compile("OWNER" + "/" + "REPO")
+# The repository-slug placeholder is assembled from halves so this file does not
+# match its own scan, and so `grep -rn` for it across the tree returns nothing.
+# The template placeholder deliberately does not match GitHub Actions' `${{ … }}`
+# expressions, which are legitimate and appear in the workflows.
+PLACEHOLDERS = [
+    ("repository slug", re.compile("OWNER" + "/" + "REPO")),
+    ("template", re.compile(r"(?<!\$)\{\{[^}\n]*\}\}")),
+]
 PLACEHOLDER_EXCLUDE_DIRS = {".git", "node_modules", "__pycache__", "results"}
 
 # Mirrors the case schema the CLI parses (schema_version "1.0").
@@ -254,7 +259,7 @@ def check_evals(root, plugin_dirs):
 
 
 def check_placeholders(root):
-    """No unreplaced repository placeholders survive anywhere in the tree."""
+    """No unreplaced placeholder of any kind survives anywhere in the tree."""
     hits = []
     for path in root.rglob("*"):
         if not path.is_file():
@@ -269,12 +274,63 @@ def check_placeholders(root):
         except (UnicodeDecodeError, OSError):
             continue
         for n, line in enumerate(text.splitlines(), start=1):
-            if PLACEHOLDER.search(line):
-                hits.append(f"{path.relative_to(root)}:{n}")
-    for hit in hits:
-        fail(hit, "unreplaced repository placeholder")
+            for label, pattern in PLACEHOLDERS:
+                if pattern.search(line):
+                    hits.append((f"{path.relative_to(root)}:{n}", label))
+    for hit, label in hits:
+        fail(hit, f"unreplaced {label} placeholder")
     if not hits:
-        note("no unreplaced repository placeholders")
+        note("no unreplaced placeholders")
+
+
+def check_guides(root):
+    """Guides are published prose: links have to resolve and the version has to
+    match the changelog, because the README sells them as versioned."""
+    guides_dir = root / "guides"
+    if not guides_dir.is_dir():
+        return
+
+    guides = sorted(guides_dir.glob("*.md"))
+    if not guides:
+        fail("guides/", "directory exists but contains no guide")
+        return
+
+    if not (guides_dir / "LICENSE").is_file():
+        fail("guides/", "no LICENSE -- the README licenses guides CC BY 4.0, "
+                        "separately from the MIT licence covering the rest")
+
+    for path in guides:
+        rel = path.relative_to(root)
+        text = path.read_text(encoding="utf-8")
+
+        for m in re.finditer(r"\[[^\]]*\]\(([^)]+)\)", text):
+            target = m.group(1).split("#")[0].strip()
+            if not target or re.match(r"^(https?:|mailto:|#)", target):
+                continue
+            if not (path.parent / target).resolve().exists():
+                line = text[:m.start()].count("\n") + 1
+                fail(f"{rel}:{line}", f"internal link does not resolve: {target}")
+
+        header = re.search(r"^\|\s*\*\*Version\*\*\s*\|\s*([^|]+?)\s*\|", text, re.M)
+        if not header:
+            fail(str(rel), "no Version row in the header table")
+            continue
+
+        section = re.split(r"^##\s+Changelog\s*$", text, maxsplit=1, flags=re.M)
+        if len(section) < 2:
+            fail(str(rel), f"declares version {header.group(1)} but has no changelog")
+            continue
+
+        cells = [c.strip() for c in re.findall(r"^\|\s*([^|]*?)\s*\|", section[1], re.M)]
+        versions = [c for c in cells
+                    if c and c.lower() != "version" and not re.fullmatch(r"[-: ]+", c)]
+        if not versions:
+            fail(str(rel), "changelog has no entries")
+        elif versions[0] != header.group(1):
+            fail(str(rel), f"header says version {header.group(1)} but the newest "
+                           f"changelog entry is {versions[0]}")
+        else:
+            note(f"guide ok: {rel} (v{header.group(1)}, links resolve)")
 
 
 def main():
@@ -287,6 +343,7 @@ def main():
     plugin_dirs = check_marketplace(root)
     check_skills(root, plugin_dirs)
     check_evals(root, plugin_dirs)
+    check_guides(root)
     check_placeholders(root)
 
     for message in notes:

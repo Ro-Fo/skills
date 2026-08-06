@@ -43,11 +43,9 @@ Not using Claude Code? Every skill is a plain directory containing `SKILL.md`. C
 
 ## The guide
 
-**Write the skill. Then attack it.** — a working guide to authoring and reviewing Agent Skills. Free, CC BY 4.0, versioned.
+**[Write the skill. Then attack it.](guides/writing-agent-skills.md)** — a working guide to authoring and reviewing Agent Skills. Free, CC BY 4.0, versioned.
 
-> **Not in this repo yet.** Until it lands under `guides/`, the reasoning behind `skill-quality` is in the plugin's own reference files: [`evidence.md`](plugins/skill-quality/skills/reviewing-agent-skills/references/evidence.md) labels every rule *spec / measured / vendor / reasoned*, and [`review-passes.md`](plugins/skill-quality/skills/reviewing-agent-skills/references/review-passes.md) is the nine passes in full.
-
-Short version:
+It's the reasoning behind `skill-quality`, and it's readable on its own. Short version:
 
 - The failure mode that costs you isn't malformed YAML. It's a spec-compliant, well-structured skill that quietly makes the output worse.
 - Across analysed public skill corpora, the dimension separating useful from useless is **novelty** — content the model doesn't already have. Most skills mainly restate what it already knew, and pay for it on every run.
@@ -69,7 +67,7 @@ If you're adding a skill, the bar is the one the guide sets: it has to contain s
 ## Licence
 
 - **Code and skills** (everything under `plugins/`): [MIT](LICENSE)
-- **Guides** (everything under `guides/`, once published): [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — copy it, fork it, teach from it, ship it internally. Attribution appreciated, permission not required.
+- **Guides** (everything under `guides/`): [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — copy it, fork it, teach from it, ship it internally. Attribution appreciated, permission not required.
 
 ---
 
