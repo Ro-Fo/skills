@@ -265,7 +265,7 @@ def check_repo_links(root):
     check inside each skill directory. This covers everything else -- the
     READMEs and CONTRIBUTING, whose whole job is pointing at other files.
     """
-    targets = [root / "README.md", root / "CONTRIBUTING.md"]
+    targets = [root / "README.md", root / "CONTRIBUTING.md", root / "SECURITY.md"]
     targets += sorted((root / "plugins").glob("*/README.md"))
     targets += sorted((root / "plugins").glob("*/evals/README.md"))
 

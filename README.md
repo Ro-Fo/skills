@@ -1,5 +1,7 @@
 # byteXpand Agent Skills
 
+[![validate](https://github.com/Ro-Fo/skills/actions/workflows/validate.yml/badge.svg)](https://github.com/Ro-Fo/skills/actions/workflows/validate.yml)
+
 Open-source Agent Skills and Claude Code plugins for engineering and platform work.
 
 Two rules for everything in here:
@@ -59,6 +61,8 @@ The guide has a shelf life and says so. This whole layer is a product decision t
 ## Contributing
 
 Issues and PRs welcome. The most useful contribution isn't a new rule — it's evidence against an existing one. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+A skill runs with your agent's privileges and can tell it what to do next, so security reports go privately rather than into the tracker — [SECURITY.md](SECURITY.md).
 
 If you're adding a skill, the bar is the one the guide sets: it has to contain something the model doesn't already know, and it has to come with evals.
 

@@ -1,0 +1,61 @@
+name: Evidence against a rule
+description: A rule in a skill or the guide is wrong, weaker than claimed, or no longer necessary. The most useful thing you can send.
+title: "Evidence: "
+labels: ["evidence"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Every rule is labelled *spec / measured / vendor / reasoned* in the
+        skill's `references/evidence.md`. A rule labelled **reasoned** is an
+        argument, not a finding — it should be possible to lose that argument.
+
+        You do not need a PR. The issue is enough.
+
+  - type: input
+    id: rule
+    attributes:
+      label: Which rule
+      description: File and the sentence itself, quoted.
+      placeholder: 'references/review-passes.md — "Do not skip a pass because it obviously passes."'
+    validations:
+      required: true
+
+  - type: dropdown
+    id: shape
+    attributes:
+      label: What kind of evidence
+      options:
+        - A model or harness changed and the rule is now redundant
+        - The cited source does not support the rule
+        - Following the rule made the output worse
+        - The rule is labelled measured but nothing measured it
+        - Something else
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: The evidence
+      description: |
+        Quote the source next to the rule, or describe the run. Enough that
+        someone else could reach the same conclusion without asking you.
+    validations:
+      required: true
+
+  - type: input
+    id: pinned
+    attributes:
+      label: Model, harness and settings
+      description: |
+        Only if your evidence is a run. A result never measures a model alone —
+        it measures model × harness × settings, and without all three it can't
+        be compared to the next one.
+      placeholder: "claude-opus-5, Claude Code 2.1.223, default settings"
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What should happen to the rule
+      description: Delete it, downgrade its label, narrow it, or rewrite it — your call to argue.
