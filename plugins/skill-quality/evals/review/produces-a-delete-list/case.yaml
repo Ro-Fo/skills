@@ -1,0 +1,68 @@
+schema_version: "1.0"
+name: produces-a-delete-list
+description: >-
+  A deliberately generic draft, pasted inline so the case is self-contained.
+  Every instruction in it is either something the model already does or a fact
+  that belongs in a tool call. A review that returns only improvements has
+  failed this case; the delete list is the output under test.
+tags:
+  - review
+  - delete-first
+execution:
+  prompt: |-
+    Review this skill before I ship it. The failure I saw without it was that
+    Claude opened pull requests against main instead of a feature branch.
+
+    ---
+    name: pr-helper
+    description: Helps with pull requests.
+    ---
+
+    # PR helper
+
+    ## Guidelines
+
+    - Write clear, descriptive commit messages.
+    - Follow best practices for code quality.
+    - Be careful and think step by step before making changes.
+    - Always test your code before committing.
+    - Our default branch is called `main`.
+    - The team currently has 12 engineers and the on-call rota is weekly.
+    - Never push directly to the default branch; open a pull request instead.
+    - Use clear variable names and add comments where the code is not obvious.
+  max_turns: 12
+  timeout_seconds: 420
+runs: 3
+graders:
+  - type: llm
+    name: deletes-the-generic-lines
+    criteria: >-
+      The response names specific lines to delete because the model already
+      does them without instruction — at minimum the "best practices",
+      "think step by step", "clear variable names" or "clear, descriptive
+      commit messages" lines. Naming them as improvements rather than
+      deletions does not count.
+    weight: 3
+  - type: llm
+    name: flags-the-stale-fact
+    criteria: >-
+      The response flags the team-size / on-call-rota line as a fact that lives
+      in a system and will go stale in the skill, or as content unrelated to
+      the stated failure.
+    weight: 2
+  - type: llm
+    name: keeps-the-line-that-earns-its-place
+    criteria: >-
+      The response keeps, rather than deletes, the instruction not to push
+      directly to the default branch — that is the one rule tied to the failure
+      the author actually observed.
+    weight: 2
+  - type: llm
+    name: reaches-a-verdict
+    criteria: >-
+      The response ends with an explicit verdict of ship, ship after fixes, or
+      do not ship, with the single reason that decided it.
+    weight: 1
+expected_outcome: >-
+  A delete list that removes the generic craft instructions and the copied
+  organisational fact, keeps the branch rule, and states a verdict.
