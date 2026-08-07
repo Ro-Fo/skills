@@ -1,0 +1,21 @@
+{
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
+  "name": "skill-quality",
+  "version": "0.1.0",
+  "description": "Adversarial review of an Agent Skill before it ships — delete list, triggering, context cost, verifiability, permissions, supply chain, interference.",
+  "author": {
+    "name": "Robert Förster",
+    "email": "Robert.Foerster@bytexpand.com",
+    "url": "https://bytexpand.com"
+  },
+  "homepage": "https://github.com/Ro-Fo/skills/tree/main/plugins/skill-quality",
+  "repository": "https://github.com/Ro-Fo/skills",
+  "license": "MIT",
+  "keywords": [
+    "agent-skills",
+    "skill-review",
+    "context-engineering",
+    "claude-code",
+    "quality"
+  ]
+}
