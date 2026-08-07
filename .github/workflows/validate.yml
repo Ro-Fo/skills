@@ -1,0 +1,69 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  repository:
+    name: Manifests, skills, evals
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install PyYAML
+        run: pip install --disable-pip-version-check pyyaml
+
+      # Covers what the plugin spec validator does not: that every plugin
+      # `source` resolves, that marketplace and plugin.json agree on name and
+      # version, that every skill passes the mechanical checker in strict mode
+      # and carries its evidence file, that every plugin carries evals with at
+      # least one negative case, and that no unreplaced repository placeholder
+      # survives anywhere in the tree.
+      - name: Repository checks
+        run: python3 .github/scripts/check_marketplace.py
+
+  spec:
+    name: Plugin spec validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      # Deliberately unpinned. This job exists to catch the manifests drifting
+      # out of step with the current plugin spec, so it has to track the current
+      # CLI. If a future release starts rejecting something here, that is the
+      # check doing its job, not a flake to pin away.
+      - name: Install Claude Code CLI
+        run: |
+          npm install -g @anthropic-ai/claude-code
+          claude --version
+
+      - name: Validate marketplace manifest
+        run: claude plugin validate . --strict
+
+      - name: Validate plugin manifests
+        run: |
+          for plugin in plugins/*/; do
+            echo "::group::$plugin"
+            claude plugin validate "$plugin" --strict
+            echo "::endgroup::"
+          done

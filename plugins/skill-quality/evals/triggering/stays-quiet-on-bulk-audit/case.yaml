@@ -1,0 +1,37 @@
+schema_version: "1.0"
+name: stays-quiet-on-bulk-audit
+description: >-
+  A bulk audit across an existing collection of installed skills — the job of a
+  stocktake tool, not of a pre-publication review of one skill. This case exists
+  because the two descriptions compete for the same trigger space; it is the
+  regression test for that boundary.
+tags:
+  - triggering
+  - negative
+  - interference
+execution:
+  prompt: |-
+    I have about 40 skills installed and my context feels bloated. Go through
+    the whole collection, rank them by how much they cost me per run, and tell
+    me which ones to drop.
+  max_turns: 8
+  timeout_seconds: 300
+runs: 3
+graders:
+  - type: tool_used
+    name: does-not-load-the-skill
+    tool: Skill
+    input_match: reviewing-agent-skills
+    max: 0
+    weight: 2
+  - type: llm
+    name: treats-it-as-a-collection-problem
+    criteria: >-
+      The response addresses the installed collection as a whole — inventory,
+      per-skill cost, what to remove. It does not pivot into a
+      ship / do-not-ship review of a single skill, and does not produce a
+      line-level delete list for one SKILL.md.
+    weight: 1
+expected_outcome: >-
+  reviewing-agent-skills does not load; the request is handled as a
+  collection-wide stocktake.

@@ -1,0 +1,52 @@
+name: Bug
+description: A skill mis-triggers, a script fails, a manifest doesn't install, a link is broken.
+title: "Bug: "
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Where
+      options:
+        - Skill triggers when it shouldn't, or not when it should
+        - check_structure.py
+        - Install / marketplace manifest
+        - The guide
+        - CI
+        - Somewhere else
+    validations:
+      required: true
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: Include the command and its actual output, not a summary of it.
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected instead
+    validations:
+      required: true
+
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: Plugin version, Claude Code version, and the model if the bug is about triggering or output quality.
+      placeholder: "skill-quality 0.1.0, Claude Code 2.1.223, claude-opus-5"
+    validations:
+      required: true
+
+  - type: textarea
+    id: installed
+    attributes:
+      label: Other installed skills
+      description: |
+        Only for triggering bugs, and worth the effort — skills sharing a
+        context window interfere without sharing any variable or dependency,
+        and a collision is invisible from one skill alone.

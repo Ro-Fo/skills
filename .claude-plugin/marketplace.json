@@ -1,0 +1,36 @@
+{
+  "name": "bytexpand",
+  "owner": {
+    "name": "Robert Förster",
+    "email": "Robert.Foerster@bytexpand.com",
+    "url": "https://bytexpand.com"
+  },
+  "metadata": {
+    "description": "Agent Skills that ship with their evidence and their evals",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "skill-quality",
+      "source": "./plugins/skill-quality",
+      "description": "Adversarial review of an Agent Skill before it ships — delete list, triggering, context cost, verifiability, permissions, supply chain, interference.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Robert Förster",
+        "email": "Robert.Foerster@bytexpand.com",
+        "url": "https://bytexpand.com"
+      },
+      "homepage": "https://github.com/Ro-Fo/skills/tree/main/plugins/skill-quality",
+      "repository": "https://github.com/Ro-Fo/skills",
+      "license": "MIT",
+      "category": "development",
+      "keywords": [
+        "agent-skills",
+        "skill-review",
+        "context-engineering",
+        "claude-code",
+        "quality"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+# Eval runs write here by default (claude plugin eval --output-dir)
+evals/results/
+plugins/*/evals/results/
+*.eval-report.html
+
+# Packaged skills, built for releases
+*.skill
+dist/
+
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

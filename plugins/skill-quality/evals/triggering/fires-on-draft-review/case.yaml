@@ -1,0 +1,36 @@
+schema_version: "1.0"
+name: fires-on-draft-review
+description: >-
+  One freshly drafted SKILL.md, handed over for a check before it is published.
+  This is the skill's core trigger. If it does not fire here it fires nowhere.
+tags:
+  - triggering
+  - positive
+execution:
+  prompt: |-
+    I just finished writing a SKILL.md for a skill that formats our commit
+    messages — about 200 lines, with a references/ directory. Before I publish
+    it to our internal marketplace, can you go over it and tell me whether it
+    is worth shipping?
+  max_turns: 8
+  timeout_seconds: 300
+runs: 3
+graders:
+  - type: tool_used
+    name: loads-the-skill
+    tool: Skill
+    input_match: reviewing-agent-skills
+    min: 1
+    weight: 2
+  - type: llm
+    name: opens-a-pre-ship-review
+    criteria: >-
+      The response begins an adversarial review of that one skill, aimed at a
+      ship / do-not-ship decision. It asks for the skill directory, or for what
+      failure the skill was written to fix, or starts working through review
+      passes. It does not instead offer to audit the user's other skills, and
+      it does not simply agree the skill looks fine.
+    weight: 1
+expected_outcome: >-
+  The reviewing-agent-skills skill loads and a single-skill pre-publication
+  review begins.
