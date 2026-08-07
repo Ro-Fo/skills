@@ -7,7 +7,7 @@ Open-source Agent Skills and Claude Code plugins for engineering and platform wo
 Two rules for everything in here:
 
 1. **Every skill ships with its evidence.** Each one carries a `references/evidence.md` labelling every rule *spec / measured / vendor / reasoned*, plus a section on what isn't established. If a rule can't be argued with, it shouldn't be followed.
-2. **Every skill ships with its evals.** Test prompts and trigger queries live in the plugin's `evals/` directory. Where they haven't been run, that's stated rather than implied.
+2. **Every skill ships with its evals.** Test prompts and trigger queries live in the plugin's `evals/` directory, with the score, the model and the date where they've been run — and an explicit "not run" where they haven't.
 
 ---
 
