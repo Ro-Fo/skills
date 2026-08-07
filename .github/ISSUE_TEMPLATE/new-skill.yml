@@ -1,0 +1,53 @@
+name: Propose a skill
+description: You want to add a skill to this marketplace. Start here rather than with a PR.
+title: "Skill: "
+labels: ["new-skill"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The bar has two halves and both are load-bearing: it contains something
+        the model does not already know, and it comes with evals. Open this
+        before writing it — the first question below is the one that usually
+        ends the conversation, and it is cheaper to answer now.
+
+  - type: textarea
+    id: failure
+    attributes:
+      label: What failed without the skill
+      description: |
+        The task you ran cold, and where the model actually got it wrong. Not
+        what you expect it to get wrong.
+
+        If you can't name a failure you saw, there is nothing to build yet. A
+        skill written from imagined problems is the most common failure mode and
+        no amount of later polish compensates.
+    validations:
+      required: true
+
+  - type: textarea
+    id: novelty
+    attributes:
+      label: What it contains that the model doesn't already have
+      description: |
+        Decisions, constraints from incidents, who owns what, routes to where
+        the real context lives. Not craft — the model is better at craft than a
+        sentence about craft, and you pay for that sentence on every run.
+    validations:
+      required: true
+
+  - type: textarea
+    id: evals
+    attributes:
+      label: Evals you plan to ship
+      description: |
+        Including at least one negative case: a request that sounds like this
+        skill's job but isn't, which must not trigger it.
+    validations:
+      required: true
+
+  - type: input
+    id: neighbours
+    attributes:
+      label: What it might collide with
+      description: Skills already in this marketplace, or common ones elsewhere, whose descriptions overlap.
